@@ -5,6 +5,7 @@ export default {
     AxiosError: 'Ошибка сети',
     success: 'RSS успешно загружен',
     ParseError: 'Ресурс не содержит валидный RSS',
+    loading: 'Загрузка',
     feedsTitle: 'Фиды',
     postsTitle: 'Посты',
     previewButton: 'Просмотр',

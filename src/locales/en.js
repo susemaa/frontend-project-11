@@ -5,6 +5,7 @@ export default {
     AxiosError: 'Network failure',
     success: 'RSS uploaded successfully',
     ParseError: 'Link doesnt containt valid RSS',
+    loading: 'Loading',
     feedsTitle: 'Feeds',
     postsTitle: 'Posts',
     previewButton: 'Preview',
