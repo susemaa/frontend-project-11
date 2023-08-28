@@ -10,7 +10,6 @@ const allOrigin = (url) => `https://allorigins.hexlet.app/get?disableCache=true&
 
 export default () => {
   const defaultLng = 'ru';
-  //i18next init
   const i18Instance = i18next.createInstance();
   i18Instance.init({
     lng: defaultLng,
@@ -27,11 +26,11 @@ export default () => {
         notOneOf: { key: 'notOneOf' },
       },
     });
-    
+
     return yup.string().url().notOneOf(validLinks);
   };
 
-//model
+  // model
   const state = {
     validLinks: [],
     form: {
@@ -55,10 +54,10 @@ export default () => {
     feeds: document.querySelector('.feeds'),
   };
 
-//viev
+  // viev
   const watchedState = onChange(state, render(elements, state, i18Instance));
 
-//controller
+  // controller
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -103,23 +102,24 @@ export default () => {
             state.form.error = i18Instance.t(error.name);
             watchedState.form.state = `error ${error.name}`;
             break;
+          default:
+            throw new Error('unkown Error');
         }
       });
   });
 
   const updateData = (links) => {
-    const posts = links.map((link) => 
-      axios.get(allOrigin(link))
-        .then((response) => {
-          const data = parse(response.data.contents);
-          if (!data) {
-            throw new Error('ParseError');
-          }
-          return data.items;
-        })
-        .catch(() => ([])));
-    
-    const promise = Promise.all(posts)
+    const currentPosts = links.map((link) => axios.get(allOrigin(link))
+      .then((response) => {
+        const data = parse(response.data.contents);
+        if (!data) {
+          throw new Error('ParseError');
+        }
+        return data.items;
+      })
+      .catch(() => ([])));
+
+    Promise.all(currentPosts)
       .then((arr) => arr.flatMap((posts) => posts))
       .then((posts) => {
         const oldPostsTitles = state.data.postList.map((post) => post.title);

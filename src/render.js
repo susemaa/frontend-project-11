@@ -1,12 +1,10 @@
-import i18next from "i18next";
-
-const handlePreviewButton = (title, description, state) =>(e) => {
+const handlePreviewButton = (title, description, state) => (e) => {
   const titleContainer = document.querySelector('.modal-title');
   titleContainer.textContent = title;
   const descriptionContainer = document.querySelector('.modal-body');
   descriptionContainer.textContent = description;
 
-  const id = e.target.dataset.id;
+  const { id } = e.target.dataset;
   const link = document.querySelector(`[data-id="${id}"]`);
   if (link.classList.contains('fw-bold')) {
     state.shownLinksId.push(id);
@@ -73,7 +71,7 @@ const renderFeeds = ({ feeds }, state, i18Instance) => {
     const titleElement = document.createElement('h3');
     titleElement.classList.add('h6', 'm-0');
     titleElement.textContent = title;
-    
+
     const descriptionElement = document.createElement('p');
     descriptionElement.classList.add('m-0', 'small', 'text-black-50');
     descriptionElement.textContent = description;
@@ -99,7 +97,9 @@ const renderPosts = ({ posts }, state, i18Instance) => {
 
   const postList = document.createElement('ul');
   postList.classList.add('list-group', 'border-0', 'rounded-0');
-  state.data.postList.map(({ title, link, description, id}) => {
+  state.data.postList.map(({
+    title, link, description, id,
+  }) => {
     const aElement = document.createElement('a');
     aElement.classList.add('fw-bold');
     if (state.shownLinksId.includes(id)) {
@@ -137,7 +137,9 @@ const renderPosts = ({ posts }, state, i18Instance) => {
 };
 
 const renderSent = (elements, state, i18Instance) => {
-  const { form, rssInput, feedback, submitButton } = elements;
+  const {
+    form, rssInput, feedback, submitButton,
+  } = elements;
   renderFeeds(elements, state, i18Instance);
   renderPosts(elements, state, i18Instance);
   if (feedback.classList.contains('text-danger')) {
@@ -153,19 +155,21 @@ const renderSent = (elements, state, i18Instance) => {
   rssInput.focus();
 };
 
-export default (elements, state, i18Instance) => (path, value, previousValue) => {
+export default (elements, state, i18Instance) => (_path, value) => {
   switch (value) {
-    case ('sending') :
+    case ('sending'):
       renderSending(elements);
       break;
-    case ('sent') :
+    case ('sent'):
       renderSent(elements, state, i18Instance);
       break;
-    case ('update') :
+    case ('update'):
       renderPosts(elements, state, i18Instance);
       break;
-    case value.match(/^error/)?.input : //value starts with error
+    case value.match(/^error/)?.input: // value starts with error
       renderError(elements, state, i18Instance);
       break;
+    default:
+      throw new Error('unknown watchedState value');
   }
 };

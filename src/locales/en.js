@@ -8,5 +8,5 @@ export default {
     feedsTitle: 'Feeds',
     postsTitle: 'Posts',
     previewButton: 'Preview',
-  }
+  },
 };

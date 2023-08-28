@@ -1,9 +1,9 @@
 const getUniqueId = () => {
   // always start with a letter (for DOM friendlyness)
-  var idstr = String.fromCharCode(Math.floor((Math.random() * 25) + 65));
+  let idstr = String.fromCharCode(Math.floor((Math.random() * 25) + 65));
   do {
     // between numbers and characters (48 is 0 and 90 is Z (42-48 = 90)
-    var ascicode = Math.floor((Math.random() * 42) + 48);
+    const ascicode = Math.floor((Math.random() * 42) + 48);
     if (ascicode < 58 || ascicode > 64) {
       // exclude all chars between : (58) and @ (64)
       idstr += String.fromCharCode(ascicode);
@@ -36,12 +36,17 @@ export default (stringXML) => {
   const itemsXML = data.querySelectorAll('item');
   const items = [];
   itemsXML.forEach((itemXML) => {
-    const title = itemXML.children[0].textContent;
+    const itemTitle = itemXML.children[0].textContent;
     const link = itemXML.children[2].textContent;
-    const description = itemXML.children[3].textContent;
+    const itemDescription = itemXML.children[3].textContent;
     const pubDate = itemXML.children[4].textContent;
-    
-    items.push({ title, link, description, pubDate });
+
+    items.push({
+      title: itemTitle,
+      link,
+      description: itemDescription,
+      pubDate,
+    });
   });
   setUniqueIds(items);
 

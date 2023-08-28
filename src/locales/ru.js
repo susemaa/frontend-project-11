@@ -8,5 +8,5 @@ export default {
     feedsTitle: 'Фиды',
     postsTitle: 'Посты',
     previewButton: 'Просмотр',
-  }
+  },
 };
