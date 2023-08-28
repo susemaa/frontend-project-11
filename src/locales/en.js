@@ -2,6 +2,10 @@ export default {
   translation: {
     notOneOf: 'RSS already exists',
     url: 'Link must be valid URL',
-    success: 'URL uploaded successfully',
+    success: 'RSS uploaded successfully',
+    ParseError: 'Link doesnt containt valid RSS',
+    feedsTitle: 'Feeds',
+    postsTitle: 'Posts',
+    previewButton: 'Preview',
   }
 };

@@ -6,6 +6,8 @@ import resources from './locales/index.js';
 import render from './render.js';
 import parse from './parser.js';
 
+const allOrigin = (url) => `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
+
 export default () => {
   const defaultLng = 'ru';
   //i18next init
@@ -40,7 +42,8 @@ export default () => {
     data: {
       feedList: [],
       postList: [],
-    }
+    },
+    shownLinksId: [],
   };
 
   const elements = {
@@ -48,6 +51,8 @@ export default () => {
     submitButton: document.querySelector('button[type="submit"]'),
     rssInput: document.querySelector('#url-input'),
     feedback: document.querySelector('p.feedback'),
+    posts: document.querySelector('.posts'),
+    feeds: document.querySelector('.feeds'),
   };
 
 //viev
@@ -70,27 +75,63 @@ export default () => {
         return axios.get(allOrigin(validLink));
       })
       .then((response) => {
-        console.log(response);
         if (response.status !== 200) {
-          throw new Erorr(`networkError ${response.status}`);
+          throw new Error(`networkError ${response.status}`);
         }
         const data = parse(response.data.contents);
         if (!data) {
-          throw new Erorr('parseErorr');
+          throw new Error('ParseError');
         }
         const { title, description, items } = data;
-        console.log(title, description, items);
+        state.data.feedList.unshift({ title, description });
+        state.data.postList.unshift(...items);
+        watchedState.form.state = 'sent';
       })
       .catch((error) => {
         switch (error.name) {
           case 'ValidationError':
-            console.log('valid error', error.message.key);
             state.form.valid = false;
             state.form.error = i18Instance.t(error.message.key);
             watchedState.form.state = `error ${error.message.key}`;
             break;
+          case 'Error':
+            state.validLinks.pop();
+            state.form.error = i18Instance.t(error.message);
+            watchedState.form.state = `error ${error.message}`;
+            break;
         }
-        //watchedState.form.state = 'error';
       });
   });
+
+  const updateData = (links) => {
+    const posts = links.map((link) => 
+      axios.get(allOrigin(link))
+        .then((response) => {
+          const data = parse(response.data.contents);
+          if (!data) {
+            throw new Error('ParseError');
+          }
+          return data.items;
+        })
+        .catch(() => ([])));
+    
+    const promise = Promise.all(posts)
+      .then((arr) => arr.flatMap((posts) => posts))
+      .then((posts) => {
+        const oldPostsTitles = state.data.postList.map((post) => post.title);
+        const newPosts = posts.filter((post) => !oldPostsTitles.includes(post.title));
+        if (newPosts.length) {
+          state.data.postList.unshift(...newPosts);
+          watchedState.form.state = 'update';
+        }
+      })
+      .then(() => {
+        setTimeout(() => {
+          state.form.state = 'filling';
+          return updateData(links);
+        }, 5000);
+      });
+  };
+
+  updateData(state.validLinks);
 };
