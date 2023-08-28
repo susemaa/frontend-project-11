@@ -99,6 +99,10 @@ export default () => {
             state.form.error = i18Instance.t(error.message);
             watchedState.form.state = `error ${error.message}`;
             break;
+          case 'AxiosError':
+            state.form.error = i18Instance.t(error.name);
+            watchedState.form.state = `error ${error.name}`;
+            break;
         }
       });
   });
