@@ -53,5 +53,6 @@ export default () => {
   } else {
     config.mode = 'development';
   }
+  config.stats = 'none';
   return config;
 };

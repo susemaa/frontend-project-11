@@ -1,5 +1,5 @@
 develop:
-	npx webpack serve
+	npx webpack serve --no-client-overlay
 
 install:
 	npm ci
