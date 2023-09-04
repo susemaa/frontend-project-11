@@ -3,7 +3,7 @@ export default (stringXML) => {
   const data = parser.parseFromString(stringXML, 'application/xml');
   const errorNode = data.querySelector('parsererror');
   if (errorNode) {
-    return false;
+    throw new Error('ParseError');
   }
   const title = data.querySelector('title').textContent;
   const description = data.querySelector('description').textContent;

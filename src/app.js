@@ -106,9 +106,6 @@ export default () => {
               throw new Error(`networkError ${response.status}`);
             }
             const data = parse(response.data.contents);
-            if (!data) {
-              throw new Error('ParseError');
-            }
             const { title, description, items } = data;
             setUniqueIds(items);
             state.data.feedList.unshift({ title, description });
@@ -141,9 +138,6 @@ export default () => {
         const currentPosts = links.map((link) => axios.get(makeUrlWithProxy(link))
           .then((response) => {
             const data = parse(response.data.contents);
-            if (!data) {
-              throw new Error('ParseError');
-            }
             setUniqueIds(data.items);
             return data.items;
           })
