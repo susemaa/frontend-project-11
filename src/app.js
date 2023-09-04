@@ -140,8 +140,7 @@ export default () => {
             const data = parse(response.data.contents);
             setUniqueIds(data.items);
             return data.items;
-          })
-          .catch(() => ([])));
+          }));
 
         Promise.all(currentPosts)
           .then((arr) => {
